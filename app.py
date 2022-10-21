@@ -1,10 +1,14 @@
+import json
+
 import click
-from flask import Flask, render_template, request, Response, current_app
+from flask import Flask, render_template, request, Response, current_app, jsonify
 from flask.cli import AppGroup
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+
+from connect_postgres import get_table
 
 # from models import Category
 
@@ -14,7 +18,7 @@ app = Flask(__name__)
 
 with app.app_context():
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask.db'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:akul6999@localhost/vasa'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:akul6999@localhost/flask'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = '123456790'
     db = SQLAlchemy(app)
@@ -76,16 +80,20 @@ def index():
 
 
 @app.route('/100')
-def warum():
+def send_date():
     with app.app_context():
-        db.create_all()
-        art = City(name='Bishkek')
-        print(db)
+        category=get_table()
+        list_json_object= []
+        category_json = {}
+        for i in category:
 
-        db.session.add(art)
-        db.session.commit()
-        db.create_all()
-    return Response('Hello World!')
+            category_json['id'] =  i[0]
+            category_json['name'] = i[1]
+            list_json_object.append(category_json)
+    context={'category':list_json_object[0]}
+    return render_template('index.html', **context)
+
+
 
 
 @app.route('/sub')
@@ -122,10 +130,7 @@ with app.app_context():
 
 with app.app_context():
     db.create_all()
-    # art = Article(title='Aliao', text='gun')
-    #
-    # db.session.add(art)
-    # db.session.commit()
+
 
 
 @app.cli.command("create-user")
