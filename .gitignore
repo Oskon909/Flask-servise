@@ -2,5 +2,5 @@ venv
 instance
 .idea
 templates
-__pycashe__
+__pycache__
 
