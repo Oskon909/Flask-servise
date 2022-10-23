@@ -1,4 +1,6 @@
 import os
+import datetime
+
 import requests
 
 from bs4 import BeautifulSoup
@@ -9,6 +11,7 @@ headers = {
     "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
     "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.160 YaBrowser/22.5.3.673 Yowser/2.5 Safari/537.36"
 }
+
 
 # link_selexy = f'https://salexy.kg'
 # post = requests.get(link_selexy, headers=headers)
@@ -25,12 +28,10 @@ def get_category(POSTSOUD):
 
     for i in perl:
         if len(i['href'].split('/')) == 4:
-
             list_category_link.append(i['href'])
             list_cateory_name.append(i.text)
 
     return list_category_link, list_cateory_name
-
 
 
 def get_subcategory(POSTSOUD):
@@ -81,9 +82,9 @@ def run_pars_selexy():
     post = requests.get(link_selexy, headers=headers)
     postsrc = post.text
     POSTSOUD = BeautifulSoup(postsrc, "lxml")
-    list_link_category,list_name_category=get_category(POSTSOUD)
+    list_link_category, list_name_category = get_category(POSTSOUD)
 
-    for link,name_category in enumerate(list_name_category):
+    for link, name_category in enumerate(list_name_category):
         for q in range(1, 200):
 
             link_doska = f'{list_link_category[link]}?page={q}'
@@ -132,7 +133,7 @@ def run_pars_selexy():
                             cat = Category(name=name_category.split()[1:][0])
                             db.session.add(cat)
                             db.session.commit()
-                            print(cat.id)# Не удалять пока
+                            print(cat.id)  # Не удалять пока
 
                 try:
                     with app.app_context():
@@ -143,15 +144,15 @@ def run_pars_selexy():
                                 subcategory = h
                                 break
                         else:
-                            subcategory =  SubCategory(category=cat.id, name=subcategory)
+                            subcategory = SubCategory(category=cat.id, name=subcategory)
                             db.session.add(subcategory)
                             db.session.commit()
-                            print(subcategory.id) # не удалять
-                except :
+                            print(subcategory.id)  # не удалять
+                except:
 
                     with app.app_context():
 
-                        subcategory =  SubCategory(category=cat.id, name=subcategory)
+                        subcategory = SubCategory(category=cat.id, name=subcategory)
                         db.session.add(subcategory)
                         db.session.commit()
 
@@ -162,11 +163,11 @@ def run_pars_selexy():
                         db.session.add(city)
                         db.session.commit()
 
-                        alisa=Advert(owner=1, category=cat.id,
-                              subcategory=subcategory.id,
-                              name=title, city=city.id,
-                              from_price=price,
-                              description=description)
+                        alisa = Advert(owner=1, category=cat.id,
+                                       subcategory=subcategory.id,
+                                       name=title, city=city.id,
+                                       from_price=price,
+                                       description=description)
 
                         db.session.add(alisa)
                         db.session.commit()
@@ -184,6 +185,9 @@ def run_pars_selexy():
                 break
 
 
-
 if __name__ == '__main__':
+    current_datetime = datetime.datetime.now()
+    print(current_datetime)
     run_pars_selexy()
+    current_datetime = datetime.datetime.now()
+    print(current_datetime)

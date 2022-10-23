@@ -3,4 +3,6 @@ instance
 .idea
 templates
 __pycache__
-
+1.html
+data
+database

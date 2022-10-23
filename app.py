@@ -8,7 +8,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from connect_postgres import get_table
+# from connect_postgres import get_table
 
 # from models import Category
 
@@ -18,7 +18,10 @@ app = Flask(__name__)
 
 with app.app_context():
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask.db'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:akul6999@localhost/flask'
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db/flask'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db:5432'
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql + psycopg2://postgres:@postgres/dbname'
+
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = '123456790'
     db = SQLAlchemy(app)
@@ -79,20 +82,20 @@ def index():
     return Response('Hello World!')
 
 
-@app.route('/100')
-def send_date():
-    with app.app_context():
-        category=get_table()
-        list_json_object= []
-        category_json = {}
-        for i in category:
-
-            category_json['id'] =  i[0]
-            category_json['name'] = i[1]
-            list_json_object.append(category_json)
-    context={'category':list_json_object[0]}
-    return render_template('index.html', **context)
-
+# @app.route('/100')
+# def send_date():
+#     with app.app_context():
+#         category=get_table()
+#         list_json_object= []
+#         category_json = {}
+#         for i in category:
+#
+#             category_json['id'] =  i[0]
+#             category_json['name'] = i[1]
+#             list_json_object.append(category_json)
+#     context={'category':list_json_object[0]}
+#     return render_template('index.html', **context)
+#
 
 
 
@@ -122,6 +125,7 @@ def Subcategory():
 
 
 with app.app_context():
+
     admin = Admin(app, name='microblog', template_mode='bootstrap3')
     admin.add_view(ModelView(Category, db.session))
     admin.add_view(ModelView(City, db.session))
@@ -141,4 +145,4 @@ def create_user(name):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001, debug=True)
+    app.run(host='0.0.0.0', debug=True)
