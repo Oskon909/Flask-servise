@@ -1,6 +1,6 @@
 import os
 import datetime
-
+import boto3
 import urllib.request
 import requests
 
@@ -42,14 +42,18 @@ def get_subcategory(POSTSOUD):
 
 def get_img(POSTSOUD):
     posts = POSTSOUD.find(class_='main-content full-on-1024').find_all('img')
-
+    print()
     if posts:
-        img_link = 'http:' + posts[0]['src']
+        img_link = posts[0]['src']
         if not os.path.exists('media/images'):
             os.mkdir('media/images')
+
         img = img_link.split('/')
+        if img[-1].split('.')[-1] != 'jpg':
+            return None
         urllib.request.urlretrieve(img_link, f'media/images/{img[-1]}')
-        return f'images/{img[-1]}'
+        print(img[-1])
+        return img[-1]
 
 
 def get_title(POSTSOUD):
@@ -177,7 +181,16 @@ def run_pars_selexy():
 
                         db.session.add(alisa)
                         db.session.commit()
-                        print(alisa.id,img)  # не удалять
+
+                        s3 = boto3.resource('s3', aws_access_key_id='AKIA4LJFIHLRIJSNYFNS',
+                                            aws_secret_access_key='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')
+
+                        # Upload a new file
+                        print(alisa.id,',,<')
+                        aser=str(alisa.id)
+                        data = open(f'media/images/{img}', 'rb')
+                        s3.Bucket('myservise').put_object(Key=aser, Body=data)
+
                     count_post += 1
                 except Exception as x:
                     print(x)
