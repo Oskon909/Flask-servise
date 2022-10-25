@@ -8,24 +8,16 @@ from flask_admin.contrib.sqla import ModelView
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-# from connect_postgres import get_table
-
-# from models import Category
-
 app = Flask(__name__)
-# db = SQLAlchemy(app)
-
 
 with app.app_context():
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask.db'
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db/flask'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@db:5432'
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql + psycopg2://postgres:@postgres/dbname'
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = '123456790'
     db = SQLAlchemy(app)
     migrate = Migrate(app, db)
+
 
 class Category(db.Model):
     __tablename__ = 'category'
@@ -98,22 +90,20 @@ def index():
 #
 
 
-
 @app.route('/sub')
 def Subcategory():
     with app.app_context():
         db.create_all()
-        rest=Category.query.all()
+        rest = Category.query.all()
 
-        cat=Category.query.filter(Category.id == 12).first()
-        print(cat.name,'---')
+        cat = Category.query.filter(Category.id == 12).first()
+        print(cat.name, '---')
 
-        ddd=Advert.query.all()
+        ddd = Advert.query.all()
         print(ddd)
 
-        ggg=Category.query.all()
+        ggg = Category.query.all()
         print(ggg)
-
 
         # art = Subcategory(name='Bishkek')
         # print(db)
@@ -125,7 +115,6 @@ def Subcategory():
 
 
 with app.app_context():
-
     admin = Admin(app, name='microblog', template_mode='bootstrap3')
     admin.add_view(ModelView(Category, db.session))
     admin.add_view(ModelView(City, db.session))
@@ -134,7 +123,6 @@ with app.app_context():
 
 with app.app_context():
     db.create_all()
-
 
 
 @app.cli.command("create-user")

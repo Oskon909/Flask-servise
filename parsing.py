@@ -1,6 +1,7 @@
 import os
 import datetime
 
+import urllib.request
 import requests
 
 from bs4 import BeautifulSoup
@@ -43,7 +44,12 @@ def get_img(POSTSOUD):
     posts = POSTSOUD.find(class_='main-content full-on-1024').find_all('img')
 
     if posts:
-        return posts[0]['src']
+        img_link = 'http:' + posts[0]['src']
+        if not os.path.exists('media/images'):
+            os.mkdir('media/images')
+        img = img_link.split('/')
+        urllib.request.urlretrieve(img_link, f'media/images/{img[-1]}')
+        return f'images/{img[-1]}'
 
 
 def get_title(POSTSOUD):
@@ -171,7 +177,7 @@ def run_pars_selexy():
 
                         db.session.add(alisa)
                         db.session.commit()
-
+                        print(alisa.id,img)  # не удалять
                     count_post += 1
                 except Exception as x:
                     print(x)
