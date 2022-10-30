@@ -45,7 +45,7 @@ def get_img(POSTSOUD):
     print()
     if posts:
         img_link = posts[0]['src']
-        if not os.path.exists('media/images'):
+        if os.path.exists('media/images')!=True:
             os.mkdir('media/images')
 
         img = img_link.split('/')
@@ -71,6 +71,9 @@ def get_town(POSTSOUD):
 def get_price(POSTSOUD):
     price = POSTSOUD.find(class_='control-holder')
     if price:
+        if price.text.split()[1].isdigit() == False:
+            return 0
+
         return price.text.split()[1]
 
 
@@ -89,13 +92,15 @@ def get_descrition(POSTSOUD):
 def run_pars_selexy():
     count_post = 0
     link_selexy = f'https://salexy.kg'
+    print('------')
     post = requests.get(link_selexy, headers=headers)
     postsrc = post.text
+    print("-----")
     POSTSOUD = BeautifulSoup(postsrc, "lxml")
     list_link_category, list_name_category = get_category(POSTSOUD)
-
+    print('Hallo')
     for link, name_category in enumerate(list_name_category):
-        for q in range(1, 200):
+        for q in range(1, 2):
 
             link_doska = f'{list_link_category[link]}?page={q}'
             post = requests.get(link_doska, headers=headers)
@@ -195,18 +200,19 @@ def run_pars_selexy():
                 except Exception as x:
                     print(x)
 
-                print(count_post)
-                if count_post == 10:
+                print(count_post,'<<<<<<<<<<<<<<<<<<<<')
+                if count_post == 5:
                     break
 
             os.remove(f'{q}.html')
-            if count_post == 10:
+            if count_post == 5:
                 break
-
+        if count_post == 5:
+            break
 
 if __name__ == '__main__':
-    current_datetime = datetime.datetime.now()
-    print(current_datetime)
+    current_datetime_start = datetime.datetime.now()
+    print(current_datetime_start)
     run_pars_selexy()
     current_datetime = datetime.datetime.now()
-    print(current_datetime)
+    print(current_datetime-current_datetime_start)

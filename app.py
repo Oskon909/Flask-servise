@@ -64,54 +64,16 @@ class Advert(db.Model):
 @app.route('/12')
 def index():
     with app.app_context():
-        db.create_all()
-        art = Category(name='Hipperion')
-        print(db)
-
-        db.session.add(art)
-        db.session.commit()
-        db.create_all()
-    return Response('Hello World!')
-
-
-# @app.route('/100')
-# def send_date():
-#     with app.app_context():
-#         category=get_table()
-#         list_json_object= []
-#         category_json = {}
-#         for i in category:
-#
-#             category_json['id'] =  i[0]
-#             category_json['name'] = i[1]
-#             list_json_object.append(category_json)
-#     context={'category':list_json_object[0]}
-#     return render_template('index.html', **context)
-#
-
-
-@app.route('/sub')
-def Subcategory():
-    with app.app_context():
-        db.create_all()
         rest = Category.query.all()
+        for i in rest:
+            print(i)
 
-        cat = Category.query.filter(Category.id == 12).first()
-        print(cat.name, '---')
 
-        ddd = Advert.query.all()
-        print(ddd)
+    return None
 
-        ggg = Category.query.all()
-        print(ggg)
 
-        # art = Subcategory(name='Bishkek')
-        # print(db)
-        #
-        # db.session.add(art)
-        # db.session.commit()
-        # db.create_all()
-    return Response('Hello World!')
+
+
 
 
 with app.app_context():
