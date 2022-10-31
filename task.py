@@ -20,7 +20,7 @@ def periodic_task():
 #send data to django Advert model
 @celery.task(name="send_data_to_django")
 def send_data_to_django(data):
-    Category.objects.create(**data)
+    Category.query.all()
     print(data)
 
     print('Hi! from send_data_to_django')
