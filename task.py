@@ -1,4 +1,4 @@
-from app import app
+from app import app, Category
 from celery_config import make_celery
 from parsing import run_pars_selexy
 
@@ -16,4 +16,16 @@ def periodic_task2():
 @celery.task(name="periodic_task")
 def periodic_task():
     print('Hi! from periodic_task')
+
+#send data to django Advert model
+@celery.task(name="send_data_to_django")
+def send_data_to_django(data):
+    Category.objects.create(**data)
+    print(data)
+
+    print('Hi! from send_data_to_django')
+
+
+
+
 

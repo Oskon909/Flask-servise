@@ -62,14 +62,15 @@ class Advert(db.Model):
 
 
 @app.route('/12')
+@app.route('/login', methods=['POST', 'GET'])
 def index():
-    with app.app_context():
-        rest = Category.query.all()
-        for i in rest:
-            print(i)
+    print(request.json)
+    # request.data = json.loads(request.data)
+    # print(request.data,'------------')
+    # with app.app_context():
 
 
-    return None
+    return {'status': 'ok'}
 
 
 

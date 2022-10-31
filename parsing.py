@@ -1,9 +1,10 @@
+import asyncio
 import os
 import datetime
 import boto3
 import urllib.request
 import requests
-
+import aiohttp
 from bs4 import BeautifulSoup
 
 from app import Advert, Category, SubCategory, db, app, City
@@ -89,130 +90,140 @@ def get_descrition(POSTSOUD):
         return desc[0].text.rstrip()
 
 
-def run_pars_selexy():
+
+async def run_pars_selexy():
     count_post = 0
     link_selexy = f'https://salexy.kg'
-    print('------')
-    post = requests.get(link_selexy, headers=headers)
-    postsrc = post.text
-    print("-----")
-    POSTSOUD = BeautifulSoup(postsrc, "lxml")
-    list_link_category, list_name_category = get_category(POSTSOUD)
-    print('Hallo')
-    for link, name_category in enumerate(list_name_category):
-        for q in range(1, 2):
-
-            link_doska = f'{list_link_category[link]}?page={q}'
-            post = requests.get(link_doska, headers=headers)
-            postsrc = post.text
-
-            with open(f'{q}.html', 'w') as file:
-                file.write(postsrc)
-
-            with open(f'{q}.html') as file:
-                postsrc = file.read()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(link_selexy, headers=headers) as post:
+            postsrc = await post.text()
 
             POSTSOUD = BeautifulSoup(postsrc, "lxml")
-            deteil_post_links = []
-            posts = POSTSOUD.find(class_="product-list").find_all("a")
+            list_link_category, list_name_category = get_category(POSTSOUD)
 
-            for k in posts:
-                Iten_href1 = k.get("href")
-                deteil_post_links.append(Iten_href1)
+            for link, name_category in enumerate(list_name_category):
+                for q in range(1, 2):
+                    async with session.get(f'{list_link_category[link]}?page={q}', headers=headers) as post:
 
-            anti_copy = []
-            for i in deteil_post_links:
-                if i in anti_copy:
-                    continue
+                        postsrc = await post.text()
 
-                anti_copy.append(i)
-                post = requests.get(i, headers=headers)
-                postsrc = post.text
-                POSTSOUD = BeautifulSoup(postsrc, "lxml")
-                subcategory = get_subcategory(POSTSOUD)
-                title = get_title(POSTSOUD)
-                img = get_img(POSTSOUD)
-                price = get_price(POSTSOUD)
-                town = get_town(POSTSOUD)
-                description = get_descrition(POSTSOUD)
+                    with open(f'{q}.html', 'w') as file:
+                        file.write(postsrc)
 
-                with app.app_context():
-                    rest = Category.query.all()
-                    for i in rest:
-                        if i.name == name_category.split()[1:][0]:
-                            cat = i
-                            break
-                    else:
+                    with open(f'{q}.html') as file:
+                        postsrc = file.read()
+
+                    POSTSOUD = BeautifulSoup(postsrc, "lxml")
+                    deteil_post_links = []
+                    posts = POSTSOUD.find(class_="product-list").find_all("a")
+
+                    for k in posts:
+                        Iten_href1 = k.get("href")
+                        deteil_post_links.append(Iten_href1)
+
+                    anti_copy = []
+                    for i in deteil_post_links:
+                        if i in anti_copy:
+                            continue
+
+                        anti_copy.append(i)
+                        async with session.get(i, headers=headers) as post:
+                            postsrc = await post.text()
+                        POSTSOUD = BeautifulSoup(postsrc, "lxml")
+
+                        subcategory = get_subcategory(POSTSOUD)
+                        title = get_title(POSTSOUD)
+                        print(title)
+
+                        price = get_price(POSTSOUD)
+                        town = get_town(POSTSOUD)
+                        description = get_descrition(POSTSOUD)
+
                         with app.app_context():
+                            rest = Category.query.all()
+                            for i in rest:
+                                if i.name == name_category.split()[1:][0]:
+                                    cat = i
+                                    break
+                            else:
+                                with app.app_context():
 
-                            cat = Category(name=name_category.split()[1:][0])
-                            db.session.add(cat)
-                            db.session.commit()
-                            print(cat.id)  # Не удалять пока
+                                    cat = Category(name=name_category.split()[1:][0])
+                                    db.session.add(cat)
+                                    db.session.commit()
+                                    print(cat.id)  # Не удалять пока
 
-                try:
-                    with app.app_context():
-                        sub = SubCategory.query.all()
-                        for h in sub:
+                        try:
+                            with app.app_context():
+                                sub = SubCategory.query.all()
+                                for h in sub:
 
-                            if h.name == subcategory:
-                                subcategory = h
-                                break
-                        else:
-                            subcategory = SubCategory(category=cat.id, name=subcategory)
-                            db.session.add(subcategory)
-                            db.session.commit()
-                            print(subcategory.id)  # не удалять
-                except:
+                                    if h.name == subcategory:
+                                        subcategory = h
+                                        break
+                                else:
+                                    subcategory = SubCategory(category=cat.id, name=subcategory)
+                                    db.session.add(subcategory)
+                                    db.session.commit()
+                                    print(subcategory.id)  # не удалять
+                        except:
 
-                    with app.app_context():
+                            with app.app_context():
 
-                        subcategory = SubCategory(category=cat.id, name=subcategory)
-                        db.session.add(subcategory)
-                        db.session.commit()
+                                subcategory = SubCategory(category=cat.id, name=subcategory)
+                                db.session.add(subcategory)
+                                db.session.commit()
 
-                try:
-                    with app.app_context():
-                        db.create_all()
-                        city = City(name=town)
-                        db.session.add(city)
-                        db.session.commit()
+                        try:
+                            with app.app_context():
+                                db.create_all()
+                                city = City(name=town)
+                                db.session.add(city)
+                                db.session.commit()
 
-                        alisa = Advert(owner=1, category=cat.id,
-                                       subcategory=subcategory.id,
-                                       name=title, city=city.id,
-                                       from_price=price,
-                                       description=description)
+                                alisa = Advert(owner=1, category=cat.id,
+                                               subcategory=subcategory.id,
+                                               name=title, city=city.id,
+                                               from_price=price,
+                                               description=description)
 
-                        db.session.add(alisa)
-                        db.session.commit()
+                                db.session.add(alisa)
+                                db.session.commit()
 
-                        s3 = boto3.resource('s3', aws_access_key_id='AKIA4LJFIHLRIJSNYFNS',
-                                            aws_secret_access_key='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')
+                                s3 = boto3.resource('s3', aws_access_key_id='AKIA4LJFIHLRIJSNYFNS',
+                                                    aws_secret_access_key='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')
 
-                        # Upload a new file
-                        print(alisa.id,',,<')
-                        aser=str(alisa.id)
-                        data = open(f'media/images/{img}', 'rb')
-                        s3.Bucket('myservise').put_object(Key=aser, Body=data)
+                                # Upload a new file
+                                count_post += 1
+                                # img = get_img(POSTSOUD)
+                                # if  os.path.exists(f'media/images/{img}') == True:
+                                #
+                                #     aser=str(alisa.id)
+                                #
+                                #     data = open(f'media/images/{img}', 'rb')
+                                #     s3.Bucket('myservise').put_object(Key=aser, Body=data)
 
-                    count_post += 1
-                except Exception as x:
-                    print(x)
 
-                print(count_post,'<<<<<<<<<<<<<<<<<<<<')
-                if count_post == 5:
+
+
+
+                        except Exception as x:
+                            print(x)
+
+                        print(count_post)
+                        if count_post == 15:
+                            break
+
+                    os.remove(f'{q}.html')
+                    if count_post == 15:
+                        break
+                if count_post == 15:
                     break
-
-            os.remove(f'{q}.html')
-            if count_post == 5:
-                break
-        if count_post == 5:
-            break
 
 if __name__ == '__main__':
     current_datetime_start = datetime.datetime.now()
     print(current_datetime_start)
-    run_pars_selexy()
+
+    asyncio.run(run_pars_selexy())
     current_datetime = datetime.datetime.now()
     print(current_datetime-current_datetime_start)
