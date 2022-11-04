@@ -19,3 +19,6 @@
 2022-11-01 07:53:57,763 - root - ERROR - An error occurred (InvalidAccessKeyId) when calling the PutObject operation: The AWS Access Key Id you provided does not exist in our records.
 2022-11-01 07:54:00,923 - root - ERROR - An error occurred (InvalidAccessKeyId) when calling the PutObject operation: The AWS Access Key Id you provided does not exist in our records.
 2022-11-01 09:51:36,966 - werkzeug - INFO -  * Detected change in '/code/app.py', reloading
+2022-11-04 05:16:29,954 - werkzeug - WARNING -  * Debugger is active!
+2022-11-04 05:16:29,955 - werkzeug - INFO -  * Debugger PIN: 958-154-335
+2022-11-04 05:30:33,021 - werkzeug - INFO -  * Detected change in '/code/main/view.py', reloading

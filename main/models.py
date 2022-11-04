@@ -11,27 +11,27 @@ class Category(db.Model, fs_mixin):
     name = db.Column(db.String())
 
 
-class SubCategory(db.Model):
+class SubCategory(db.Model,fs_mixin):
     __tablename__ = 'subcategory'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
     category = db.Column(db.Integer(), db.ForeignKey('category.id'))
 
 
-class AdvertImage(db.Model):
+class AdvertImage(db.Model,fs_mixin):
     __tablename__ = 'advertimage'
     id = db.Column(db.Integer, primary_key=True)
     image = db.Column(db.String())
     advert = db.Column(db.Integer(), db.ForeignKey('advert.id'))
 
 
-class City(db.Model):
+class City(db.Model,fs_mixin):
     __tablename__ = 'city'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
 
 
-class Advert(db.Model):
+class Advert(db.Model,fs_mixin):
     __tablename__ = 'advert'
     id = db.Column(db.Integer, primary_key=True)
     owner = db.Column(db.Integer(), nullable=True)

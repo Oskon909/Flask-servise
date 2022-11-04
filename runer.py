@@ -1,14 +1,13 @@
+import logging
+
 import click
 from flask import jsonify
 from sqlalchemy import JSON
-
 from main.app import app
 from main.models import Advert, Category
 from main.view import *
-
-# logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename='log.log')
-
-
+from main.utils import *
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename='log.log')
 
 
 
@@ -17,11 +16,6 @@ from main.view import *
 @app.route('/items')
 def items(item_id=None):
     return Category.fs_get_delete_put_post(item_id)
-
-
-
-
-
 
 
 
