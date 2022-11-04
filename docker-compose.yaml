@@ -15,7 +15,7 @@ services:
 
   web:
     build: .
-    command: python app.py 0.0.0.0:5000
+    command: python runer.py 0.0.0.0:5000 --reload
     volumes:
       - .:/code
     ports:
@@ -38,7 +38,7 @@ services:
 
   celery:
     build: .
-    command: "celery -A task.celery worker -B --loglevel=info
+    command: "celery -A main.task.celery worker -B --loglevel=info
 "
     volumes:
       - .:/code
