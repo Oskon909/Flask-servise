@@ -22,3 +22,25 @@
 2022-11-04 05:16:29,954 - werkzeug - WARNING -  * Debugger is active!
 2022-11-04 05:16:29,955 - werkzeug - INFO -  * Debugger PIN: 958-154-335
 2022-11-04 05:30:33,021 - werkzeug - INFO -  * Detected change in '/code/main/view.py', reloading
+2022-11-04 06:26:24,742 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.20.0.4:5000
+2022-11-04 06:26:24,743 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2022-11-04 06:26:24,743 - werkzeug - INFO -  * Restarting with stat
+2022-11-04 06:26:25,994 - werkzeug - WARNING -  * Debugger is active!
+2022-11-04 06:26:25,995 - werkzeug - INFO -  * Debugger PIN: 958-154-335
+2022-11-04 06:27:02,564 - werkzeug - INFO - 172.20.0.1 - - [04/Nov/2022 06:27:02] "GET /get HTTP/1.1" 200 -
+2022-11-04 06:28:05,266 - werkzeug - INFO - 172.20.0.1 - - [04/Nov/2022 06:28:05] "[31m[1mPOST /get HTTP/1.1[0m" 405 -
+2022-11-04 07:20:59,673 - werkzeug - INFO -  * Detected change in '/code/parsing/parsing.py', reloading
+2022-11-04 07:21:03,468 - werkzeug - INFO -  * Restarting with stat
+2022-11-04 07:21:09,432 - werkzeug - WARNING -  * Debugger is active!
+2022-11-04 07:21:09,455 - werkzeug - INFO -  * Debugger PIN: 958-154-335
+2022-11-04 07:27:33,949 - werkzeug - INFO -  * Detected change in '/code/parsing/parsing.py', reloading
+2022-11-04 07:27:34,109 - werkzeug - INFO -  * Restarting with stat
+2022-11-04 07:27:35,837 - werkzeug - WARNING -  * Debugger is active!
+2022-11-04 07:27:35,838 - werkzeug - INFO -  * Debugger PIN: 958-154-335
+2022-11-04 07:41:41,105 - werkzeug - INFO -  * Detected change in '/code/main/task.py', reloading
+2022-11-04 07:41:41,247 - werkzeug - INFO -  * Restarting with stat
+2022-11-04 07:41:43,250 - werkzeug - WARNING -  * Debugger is active!
+2022-11-04 07:41:43,251 - werkzeug - INFO -  * Debugger PIN: 958-154-335

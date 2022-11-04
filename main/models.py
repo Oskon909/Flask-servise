@@ -1,6 +1,6 @@
 from flask_serialize import FlaskSerialize
 
-from main.config import db
+from configuration.config import db
 
 
 fs_mixin = FlaskSerialize(db)

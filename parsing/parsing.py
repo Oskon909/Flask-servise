@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from main.models import Advert, Category, SubCategory, City
 
 from main.app import app
-from main.config import db
+from configuration.config import db
 import logging
 
 headers = {
@@ -35,13 +35,13 @@ def get_img(POSTSOUD):
     print()
     if posts:
         img_link = posts[0]['src']
-        if os.path.exists('media/images') != True:
-            os.mkdir('media/images')
+        if os.path.exists('../media/images') != True:
+            os.mkdir('../media/images')
         img = img_link.split('/')
 
         if img[-1].split('.')[-1] != 'jpg':
             return None
-        urllib.request.urlretrieve(img_link, f'media/images/{img[-1]}')
+        urllib.request.urlretrieve(img_link, f'../media/images/{img[-1]}')
         return img[-1]
 
 
@@ -153,9 +153,9 @@ async def run_pars_selexy():
 
                             count_post += 1
                             img = get_img(POSTSOUD)
-                            if os.path.exists(f'media/images/{img}') == True:
+                            if os.path.exists(f'../media/images/{img}') == True:
                                 key_picter = str(alisa.id)
-                                data = open(f'media/images/{img}', 'rb')
+                                data = open(f'../media/images/{img}', 'rb')
                                 s3.Bucket('myservise').put_object(Key=key_picter, Body=data)
 
                     except Exception as x:

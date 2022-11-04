@@ -1,8 +1,8 @@
 from flask import jsonify, request
 
 from main.app import app
-from main.config import db
-from main.models import Category, Advert
+from configuration.config import db
+from main.models import Advert
 import json
 
 @app.route('/get_data')
@@ -14,6 +14,14 @@ def post():
                     status=data['status'],category=data['category'])
     db.session.add(advert)
     db.session.commit()
+    return jsonify({'status': 'ok'})
+
+
+@app.route('/get')
+def poster():
+    data = json.loads(request.data)
+    print(data)
+
     return jsonify({'status': 'ok'})
 
 
